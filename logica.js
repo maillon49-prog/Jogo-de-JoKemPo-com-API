@@ -32,7 +32,7 @@ export async function jogadafeita(jogadaEscolhida) {
 
     try {
         const resposta = await fetch(
-            "http://localhost:3000/jogada", {
+            "https://jogo-de-jokempo-com-api.onrender.com/jogada", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -67,7 +67,7 @@ export async function start() {
         if (podeComecar) {
             try {
                 const resposta = await fetch(
-                "http://localhost:3000/start", {
+                "https://jogo-de-jokempo-com-api.onrender.com/start", {
                     method: "POST",
                 });
 
