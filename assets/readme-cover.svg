@@ -14,8 +14,8 @@
 <rect x="633" y="51" width="591" height="58" rx="16" fill="#151f2e"/><rect x="633" y="90" width="591" height="19" fill="#151f2e"/>
 <circle cx="661" cy="80" r="6" fill="#f87171"/><circle cx="682" cy="80" r="6" fill="#fbbf24"/><circle cx="703" cy="80" r="6" fill="#34d399"/>
 <text x="746" y="85" font-family="Consolas, Monaco, monospace" font-size="14" fill="#8495ad">projeto / codigo</text>
-<text x="675" y="164" font-family="Consolas, Monaco, monospace" font-size="17" fill="#82f5ab">const joken = [&quot;pedra&quot;, &quot;papel&quot;, &quot;tesoura&quot;];</text>
-<text x="675" y="196" font-family="Consolas, Monaco, monospace" font-size="17" fill="#cbd5e1">app.post(&quot;/jogada&quot;, (req, res) =&gt; {</text>
-<text x="675" y="228" font-family="Consolas, Monaco, monospace" font-size="17" fill="#cbd5e1">  // Voce contra a CPU  +  API REST</text>
-<text x="674" y="272" font-family="Consolas, Monaco, monospace" font-size="14" fill="#57d9e8">// desenvolvido para aprender na pratica</text>
+<text x="675" y="164" font-family="Consolas, Monaco, monospace" font-size="17" fill="#82f5ab" xml:space="preserve">const joken = [&quot;pedra&quot;, &quot;papel&quot;, &quot;tesoura&quot;];</text>
+<text x="675" y="196" font-family="Consolas, Monaco, monospace" font-size="17" fill="#cbd5e1" xml:space="preserve">let escolhaJogador = null;</text>
+<text x="675" y="228" font-family="Consolas, Monaco, monospace" font-size="17" fill="#cbd5e1" xml:space="preserve">let escolhaCPU = null;</text>
+<text x="674" y="272" font-family="Consolas, Monaco, monospace" font-size="14" fill="#57d9e8" xml:space="preserve">app.post(&quot;/jogada&quot;, (req, res) =&gt; {</text>
 </svg>
