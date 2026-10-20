@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JoKenPo</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+    <main>
+        <h1>JoKenPo vs CPU</h1>
+        <div class="placar">
+            <div>
+                <h2>Vitorias do Jogador</h2>
+                <span id="placarJogador"></span>
+            </div>
+            
+            <div>
+                <h2>Vitorias da CPU</h2>
+                <span id="placarCPU"></span>
+            </div>
+
+        <h2>Escolha uma jogada!</h2>
+        <div class="escolhas-css">
+            <div class="escolhas-visiveis">
+            <div>
+                <p>Pedra</p>
+                <img src="img/pedra.png" alt="Pedra">
+                <button id="botaoPedra" value="0">Pedra</button>
+            </div>
+
+            <div>
+                <p>Papel</p>
+                <img src="img/papel.png" alt="Papel">
+                <button id="botaoPapel" value="1">Papel</button>
+            </div>
+
+            <div>
+                <p>Tesoura</p>
+                <img src="img/tesoura.png" alt="Tesoura">
+                <button id="botaoTesoura" value="2">Tesoura</button>
+            </div>
+            </div>
+
+            <div class="vitoria">
+                <h2>Jogador</h2>
+                <img id="imgJogador">
+                <img src="img/VS.png" alt="icone VS">
+                <p id="vencedor"></p>
+                <h2>CPU</h2>
+                <img id="imgCPU">
+                <button id="revanche">Revanche</button>
+            </div>
+
+            <div class="resultado-css">
+                <div id="resultado">Esperando uma escolha!</div>
+                <button id="start">Start</button>
+            </div>
+            
+        </div>
+
+    </main>
+    <script type="module" src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,698 @@
+/* =========================================================
+   JOKENPO VS CPU | Arcade Neon
+   Compatível com o HTML e com o JavaScript do seu projeto.
+   A tela .vitoria inicia oculta; seu JS usa display = "block"
+   para mostrá-la e display = "none" para escondê-la.
+   ========================================================= */
+
+:root {
+    font-family: "Segoe UI", "Trebuchet MS", Arial, sans-serif;
+    color: #eff2ff;
+    background: #090c19;
+    font-synthesis: none;
+    --fundo: #090c19;
+    --texto: #eff2ff;
+    --muted: #a5acc7;
+    --borda: rgba(185, 198, 255, 0.14);
+    --roxo: #a38bff;
+    --verde: #67e6c0;
+    --laranja: #ffae7c;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-width: 320px;
+}
+
+body {
+    min-height: 100vh;
+    min-height: 100svh;
+    margin: 0;
+    padding: 38px 20px;
+    display: grid;
+    place-items: center;
+    overflow-x: hidden;
+    background:
+        radial-gradient(ellipse at 13% 12%, rgba(111, 71, 220, 0.24), transparent 40%),
+        radial-gradient(ellipse at 90% 85%, rgba(19, 166, 166, 0.13), transparent 40%),
+        radial-gradient(ellipse at 88% 8%, rgba(255, 121, 148, 0.08), transparent 35%),
+        #090c19;
+}
+
+/* Pontinhos de luz: um toque de atmosfera de jogo, só com CSS. */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.3;
+    background-image:
+        radial-gradient(circle, rgba(255, 255, 255, 0.52) 1px, transparent 1.5px),
+        radial-gradient(circle, rgba(180, 146, 255, 0.45) 1px, transparent 1.5px);
+    background-size: 130px 130px, 193px 193px;
+    background-position: 20px 33px, 86px 100px;
+}
+
+main {
+    position: relative;
+    z-index: 1;
+    isolation: isolate;
+    width: min(100%, 1060px);
+    min-width: 0;
+    padding: clamp(26px, 5vw, 58px);
+    overflow: hidden;
+    text-align: center;
+    background: linear-gradient(145deg, rgba(27, 31, 58, 0.98), rgba(13, 17, 36, 0.99));
+    border: 1px solid rgba(191, 184, 255, 0.19);
+    border-radius: 32px;
+    box-shadow:
+        0 35px 85px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07),
+        0 0 65px rgba(127, 91, 250, 0.07);
+}
+
+main::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 16%;
+    right: 16%;
+    height: 3px;
+    border-radius: 0 0 20px 20px;
+    background: linear-gradient(90deg, transparent, #8c72ff 25%, #6be7db 70%, transparent);
+    box-shadow: 0 0 24px rgba(157, 128, 255, 0.65);
+}
+
+main::after {
+    content: "";
+    position: absolute;
+    top: -190px;
+    left: 50%;
+    z-index: -1;
+    width: 550px;
+    height: 400px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(107, 85, 209, 0.16), transparent 68%);
+    pointer-events: none;
+}
+
+h1 {
+    margin: 0;
+    font-size: clamp(2.7rem, 7vw, 5.4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.075em;
+    color: #fff;
+    background: linear-gradient(115deg, #fff 10%, #e4d5ff 42%, #a991ff 69%, #75e3d2 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 8px 30px rgba(141, 103, 255, 0.12));
+}
+
+main > h2 {
+    margin: 15px 0 0;
+    color: var(--muted);
+    font-size: clamp(0.98rem, 2vw, 1.18rem);
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+}
+
+/* ================= PLACARES ================= */
+.placar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    min-width: 0;
+    margin-top: 30px;
+}
+
+.placar > div:not(.escolhas-css) {
+    --score-accent: var(--roxo);
+    --score-glow: rgba(163, 139, 255, 0.12);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-width: 0;
+    padding: 20px 24px;
+    overflow: hidden;
+    text-align: left;
+    background:
+        radial-gradient(ellipse at 100% 0%, var(--score-glow), transparent 75%),
+        linear-gradient(145deg, #222742, #151a32);
+    border: 1px solid var(--borda);
+    border-radius: 20px;
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.placar > div:not(.escolhas-css)::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 3px;
+    height: 32px;
+    transform: translateY(-50%);
+    background: var(--score-accent);
+    border-radius: 0 4px 4px 0;
+    box-shadow: 0 0 16px var(--score-glow);
+}
+
+.placar > div:nth-child(2) {
+    --score-accent: var(--laranja);
+    --score-glow: rgba(255, 174, 124, 0.1);
+}
+
+.placar > div:not(.escolhas-css) > h2 {
+    min-width: 0;
+    margin: 0;
+    color: #cbd1e9;
+    font-size: clamp(0.8rem, 1.6vw, 0.95rem);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+    text-wrap: balance;
+}
+
+#placarJogador,
+#placarCPU {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    min-width: 64px;
+    min-height: 64px;
+    padding: 8px 12px;
+    color: var(--score-accent);
+    background: rgba(7, 11, 26, 0.38);
+    border: 1px solid var(--borda);
+    border-radius: 16px;
+    font-size: clamp(1.9rem, 4vw, 2.6rem);
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    text-shadow: 0 0 22px var(--score-glow);
+}
+
+#placarJogador:empty::before,
+#placarCPU:empty::before {
+    content: "\2014";
+    opacity: 0.45;
+    font-weight: 500;
+}
+
+.placar > h2,
+.placar > .escolhas-css {
+    grid-column: 1 / -1;
+}
+
+.placar > h2 {
+    margin: 14px 0 0;
+    color: var(--muted);
+    font-size: clamp(0.98rem, 2vw, 1.18rem);
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+}
+
+.placar > .escolhas-css {
+    margin-top: 10px;
+}
+
+.escolhas-css {
+    display: grid;
+    gap: 24px;
+    min-width: 0;
+    margin-top: clamp(28px, 5vw, 48px);
+}
+
+/* ================= CARTAS DE ESCOLHA ================= */
+.escolhas-visiveis {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(10px, 2.4vw, 22px);
+    min-width: 0;
+}
+
+.escolhas-visiveis > div {
+    --accent: #af96ff;
+    --accent-glow: rgba(169, 142, 255, 0.22);
+    --card-tint: rgba(143, 111, 246, 0.08);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 19px;
+    min-width: 0;
+    padding: 27px clamp(10px, 2vw, 20px) 20px;
+    overflow: hidden;
+    background: linear-gradient(155deg, rgba(38, 43, 76, 0.95), rgba(21, 25, 49, 0.98));
+    border: 1px solid rgba(192, 201, 255, 0.13);
+    border-radius: 24px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 14px 26px rgba(0, 0, 0, 0.12);
+    transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.escolhas-visiveis > div::before {
+    content: "";
+    position: absolute;
+    top: -105px;
+    left: 50%;
+    width: 240px;
+    height: 220px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent-glow), transparent 65%);
+    pointer-events: none;
+}
+
+.escolhas-visiveis > div::after {
+    content: "01";
+    position: absolute;
+    top: 15px;
+    right: 16px;
+    color: rgba(224, 224, 255, 0.25);
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+}
+
+.escolhas-visiveis > div:nth-child(2) {
+    --accent: #70e8be;
+    --accent-glow: rgba(46, 221, 166, 0.19);
+    --card-tint: rgba(30, 196, 150, 0.08);
+}
+
+.escolhas-visiveis > div:nth-child(2)::after { content: "02"; }
+
+.escolhas-visiveis > div:nth-child(3) {
+    --accent: #ffb483;
+    --accent-glow: rgba(255, 154, 103, 0.18);
+    --card-tint: rgba(233, 128, 80, 0.08);
+}
+
+.escolhas-visiveis > div:nth-child(3)::after { content: "03"; }
+
+.escolhas-visiveis > div > p {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    color: var(--accent);
+    font-size: clamp(0.86rem, 2vw, 1rem);
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.escolhas-visiveis > div > img {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: clamp(80px, 12vw, 132px);
+    max-width: 100%;
+    height: clamp(80px, 12vw, 132px);
+    padding: 19px;
+    object-fit: contain;
+    background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.11), var(--card-tint));
+    border: 1px solid rgba(235, 232, 255, 0.13);
+    border-radius: 28px;
+    box-shadow: 0 11px 23px rgba(0, 0, 0, 0.16), 0 0 32px var(--accent-glow);
+    transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+/* ================= BOTÕES ================= */
+.escolhas-css button {
+    position: relative;
+    z-index: 1;
+    min-height: 50px;
+    padding: 12px 22px;
+    color: #0e1224;
+    font: inherit;
+    font-size: 0.99rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+    line-height: 1.25;
+    background: var(--accent, var(--roxo));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    box-shadow: 0 8px 18px var(--accent-glow, rgba(163, 139, 255, 0.18));
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;
+}
+
+.escolhas-visiveis > div > button {
+    width: 100%;
+    margin-top: auto;
+}
+
+.escolhas-css button:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 4px;
+}
+
+.escolhas-css button:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+.escolhas-css button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ================= TELA DO RESULTADO ================= */
+/* Compatível com o JS que mostra a tela com style.display = "block". */
+.vitoria {
+    --fighter-size: clamp(110px, 17vw, 164px);
+    --versus-size: clamp(56px, 8vw, 76px);
+    --fighter-top: 95px;
+    position: relative;
+    display: none;
+    min-width: 0;
+    padding: calc(var(--fighter-top) + var(--fighter-size) + 32px) 28px 30px;
+    overflow: hidden;
+    text-align: center;
+    background:
+        radial-gradient(ellipse at 22% 34%, rgba(156, 118, 255, 0.12), transparent 45%),
+        radial-gradient(ellipse at 78% 34%, rgba(255, 145, 104, 0.09), transparent 45%),
+        linear-gradient(140deg, #202544, #11162e);
+    border: 1px solid rgba(172, 160, 255, 0.22);
+    border-radius: 26px;
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.08), 0 18px 34px rgba(0, 0, 0, 0.18);
+    animation: surgir 360ms ease both;
+}
+
+.vitoria::before {
+    content: "BATALHA FINALIZADA";
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: 90%;
+    color: #b3a8dd;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.19em;
+}
+
+.vitoria > h2 {
+    position: absolute;
+    top: 47px;
+    width: max-content;
+    max-width: 40%;
+    margin: 0;
+    padding: 4px 8px;
+    color: #bbabff;
+    font-size: clamp(0.78rem, 2vw, 0.92rem);
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.vitoria > h2:first-of-type {
+    left: 24%;
+    transform: translateX(-50%);
+}
+
+.vitoria > h2:last-of-type {
+    right: 24%;
+    transform: translateX(50%);
+    color: #ffc099;
+}
+
+#imgJogador,
+#imgCPU {
+    position: absolute;
+    top: var(--fighter-top);
+    display: block;
+    width: var(--fighter-size);
+    height: var(--fighter-size);
+    padding: clamp(16px, 2.7vw, 30px);
+    object-fit: contain;
+    border: 1px solid;
+    border-radius: 32px;
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.25);
+}
+
+#imgJogador {
+    left: 24%;
+    transform: translateX(-50%);
+    background: radial-gradient(circle at 45% 25%, rgba(171, 136, 255, 0.26), rgba(91, 63, 186, 0.13));
+    border-color: rgba(179, 153, 255, 0.43);
+    box-shadow: 0 0 36px rgba(142, 102, 255, 0.16), 0 16px 30px rgba(0, 0, 0, 0.2);
+}
+
+#imgCPU {
+    right: 24%;
+    transform: translateX(50%);
+    background: radial-gradient(circle at 45% 25%, rgba(255, 179, 128, 0.23), rgba(210, 106, 73, 0.1));
+    border-color: rgba(255, 167, 122, 0.36);
+    box-shadow: 0 0 36px rgba(255, 142, 103, 0.12), 0 16px 30px rgba(0, 0, 0, 0.2);
+}
+
+.vitoria > img:not(#imgJogador):not(#imgCPU) {
+    position: absolute;
+    top: calc(var(--fighter-top) + (var(--fighter-size) - var(--versus-size)) / 2);
+    left: 50%;
+    display: block;
+    width: var(--versus-size);
+    height: var(--versus-size);
+    padding: 8px;
+    object-fit: contain;
+    transform: translateX(-50%);
+    background: #1b203c;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 50%;
+    box-shadow: 0 0 0 6px rgba(22, 26, 50, 0.78), 0 0 30px rgba(255, 255, 255, 0.08);
+}
+
+#vencedor {
+    position: relative;
+    display: block;
+    min-height: 90px;
+    margin: 0;
+    padding: 43px 18px 19px;
+    color: #ffffff;
+    font-size: clamp(1.25rem, 3vw, 1.95rem);
+    font-weight: 900;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+    background: linear-gradient(130deg, rgba(115, 85, 211, 0.24), rgba(60, 190, 177, 0.11));
+    border: 1px solid rgba(170, 155, 255, 0.21);
+    border-radius: 17px;
+    text-shadow: 0 2px 20px rgba(156, 129, 255, 0.16);
+}
+
+#vencedor::before {
+    content: "RESULTADO DA RODADA";
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    width: max-content;
+    max-width: 92%;
+    transform: translateX(-50%);
+    color: #b2bada;
+    font-size: 0.63rem;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-shadow: none;
+}
+
+#revanche {
+    --accent: #bba7ff;
+    --accent-glow: rgba(170, 137, 255, 0.22);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: min(100%, 245px);
+    margin-top: 22px;
+    background: linear-gradient(110deg, #c4b4ff, #8fcbf6);
+}
+
+#revanche::before {
+    content: "↻";
+    font-size: 1.42rem;
+    font-weight: 400;
+    line-height: 0.7;
+}
+
+/* ================= BARRA DE INFORMAÇÃO / START ================= */
+.resultado-css {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
+    min-width: 0;
+    padding: 21px 23px;
+    text-align: left;
+    background: rgba(7, 11, 26, 0.58);
+    border: 1px solid rgba(166, 172, 233, 0.16);
+    border-radius: 20px;
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.04);
+}
+
+#resultado {
+    flex: 1;
+    min-width: 0;
+    color: #dce1f7;
+    font-size: clamp(0.92rem, 2vw, 1.05rem);
+    font-weight: 600;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+}
+
+#start {
+    --accent: #f7ce85;
+    --accent-glow: rgba(255, 191, 102, 0.22);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-shrink: 0;
+    width: auto;
+    min-width: 158px;
+    min-height: 54px;
+    padding: 14px 26px;
+    color: #2d2033;
+    background: linear-gradient(110deg, #ffe4a4, #ffba80);
+    box-shadow: 0 9px 25px rgba(255, 166, 97, 0.14), inset 0 1px rgba(255, 255, 255, 0.4);
+}
+
+#start::before {
+    content: "";
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 8px solid currentColor;
+}
+
+@media (hover: hover) {
+    .escolhas-visiveis > div:hover,
+    .escolhas-visiveis > div:focus-within {
+        transform: translateY(-6px);
+        border-color: var(--accent);
+        box-shadow: 0 15px 37px var(--accent-glow), 0 16px 30px rgba(0, 0, 0, 0.22);
+    }
+
+    .escolhas-visiveis > div:hover > img {
+        transform: scale(1.06) rotate(-4deg);
+    }
+
+    .escolhas-css button:hover:not(:disabled) {
+        transform: translateY(-3px);
+        filter: brightness(1.08);
+        box-shadow: 0 11px 29px var(--accent-glow, rgba(163, 139, 255, 0.25));
+    }
+
+    .escolhas-css button:active:not(:disabled) {
+        transform: scale(0.97);
+    }
+}
+
+@keyframes surgir {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ================= TABLET ================= */
+@media (max-width: 760px) {
+    body { padding: 26px 14px; }
+    main { border-radius: 27px; }
+    .escolhas-visiveis > div { gap: 15px; padding: 21px 12px 15px; border-radius: 20px; }
+    .escolhas-visiveis > div > img { padding: 15px; border-radius: 23px; }
+    .vitoria { --fighter-size: clamp(96px, 19vw, 140px); --fighter-top: 94px; }
+}
+
+/* ================= CELULAR ================= */
+@media (max-width: 540px) {
+    body { padding: 16px 9px; }
+    main { padding: 28px 13px 17px; border-radius: 22px; }
+    h1 { font-size: clamp(2.4rem, 11vw, 3.5rem); }
+    main > h2 { margin-top: 10px; font-size: 0.95rem; }
+    .placar { gap: 10px; margin-top: 23px; }
+    .placar > div:not(.escolhas-css) {
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px 10px;
+        text-align: center;
+        border-radius: 16px;
+    }
+    .placar > div:not(.escolhas-css) > h2 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        min-height: 2.8em;
+        font-size: 0.73rem;
+        line-height: 1.4;
+        letter-spacing: 0;
+    }
+    #placarJogador, #placarCPU {
+        min-width: 58px;
+        min-height: 56px;
+        padding: 8px 10px;
+        border-radius: 13px;
+        font-size: 2rem;
+    }
+    .placar > h2 { margin-top: 12px; font-size: 0.95rem; }
+    .placar > .escolhas-css { margin-top: 12px; }
+    .escolhas-css { gap: 16px; margin-top: 25px; }
+    .escolhas-visiveis { gap: 7px; }
+    .escolhas-visiveis > div {
+        gap: 12px;
+        padding: 21px 6px 10px;
+        border-radius: 15px;
+    }
+    .escolhas-visiveis > div::after { top: 8px; right: 9px; font-size: 0.58rem; }
+    .escolhas-visiveis > div > p { font-size: 0.69rem; letter-spacing: 0.05em; }
+    .escolhas-visiveis > div > img {
+        width: clamp(66px, 17vw, 90px);
+        height: clamp(66px, 17vw, 90px);
+        padding: 10px;
+        border-radius: 17px;
+    }
+    .escolhas-visiveis > div > button {
+        min-height: 44px;
+        padding: 10px 3px;
+        border-radius: 10px;
+        font-size: 0.76rem;
+    }
+    .resultado-css { flex-direction: column; gap: 14px; align-items: stretch; padding: 18px 14px; text-align: center; }
+    #start { width: 100%; }
+    .vitoria {
+        --fighter-size: clamp(78px, 22vw, 116px);
+        --versus-size: clamp(45px, 12vw, 60px);
+        --fighter-top: 92px;
+        padding: calc(var(--fighter-top) + var(--fighter-size) + 24px) 11px 18px;
+        border-radius: 19px;
+    }
+    .vitoria > h2 { font-size: 0.71rem; top: 51px; letter-spacing: 0.03em; }
+    #imgJogador, #imgCPU { padding: 12px; border-radius: 21px; }
+    #vencedor { padding: 43px 11px 17px; font-size: 1.26rem; }
+    #vencedor::before { font-size: 0.57rem; letter-spacing: 0.09em; }
+    #revanche { width: 100%; margin-top: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
